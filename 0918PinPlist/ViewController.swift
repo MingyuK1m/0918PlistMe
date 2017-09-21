@@ -74,5 +74,61 @@ class ViewController: UIViewController, MKMapViewDelegate {
         maps.setRegion(region, animated: true)
     }
 
+    func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
+        
+        let identifier = "MyPin"
+        var  annotationView = maps.dequeueReusableAnnotationView(withIdentifier: identifier) as? MKPinAnnotationView
+        
+        if annotationView == nil {
+            annotationView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: identifier)
+            annotationView?.canShowCallout = true
+            
+            if annotation.title! == "시민공원" {
+                // 부시민공원
+                annotationView?.pinTintColor = UIColor.green
+                let leftIconView = UIImageView(frame: CGRect(x: 0, y: 0, width: 53, height: 53))
+                leftIconView.image = UIImage(named:"citizen_logo.png" )
+                annotationView?.leftCalloutAccessoryView = leftIconView
+                
+            } else if annotation.title! == "동의과학대" {
+                // 동의과학대학교
+                let leftIconView = UIImageView(frame: CGRect(x: 0, y: 0, width: 45, height: 45))
+                leftIconView.image = UIImage(named:"DIT_logo.png" )
+                annotationView?.leftCalloutAccessoryView = leftIconView
+                
+            } else {
+                // 송상현광장
+                annotationView?.pinTintColor = UIColor.blue
+                let leftIconView = UIImageView(frame: CGRect(x: 0, y: 0, width: 45, height: 45))
+                leftIconView.image = UIImage(named:"Songsang.png" )
+                annotationView?.leftCalloutAccessoryView = leftIconView
+            }
+        } else {
+            annotationView?.annotation = annotation
+        }
+        
+        let btn = UIButton(type: .detailDisclosure)
+        annotationView?.rightCalloutAccessoryView = btn
+        
+        return annotationView
+        
+    }
+    
+    func mapView(_ mapView: MKMapView, annotationView view: MKAnnotationView, calloutAccessoryControlTapped control: UIControl) {
+        
+        print("callout Accessory Tapped!")
+        
+        let viewAnno = view.annotation
+        let viewTitle: String = ((viewAnno?.title)!)!
+        let viewSubTitle: String = ((viewAnno?.subtitle)!)!
+        
+        print("\(viewTitle) \(viewSubTitle)")
+        
+        let ac = UIAlertController(title: viewTitle, message: viewSubTitle, preferredStyle: .alert)
+        ac.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+        present(ac, animated: true, completion: nil)
+    }
+    
+
 }
 
